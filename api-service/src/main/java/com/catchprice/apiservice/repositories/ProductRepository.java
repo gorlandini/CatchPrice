@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     Page<Product> findByUserEmail(String email, Pageable pageable);
-    List<Product> findByActivetrue();
+    List<Product> findByActiveTrue();
 
 
 }

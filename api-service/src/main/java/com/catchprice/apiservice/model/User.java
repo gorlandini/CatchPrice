@@ -18,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
@@ -27,6 +28,7 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false) private String email;
     @Column(nullable = false) private String password;
     @Column private String cep;  // ex: "01310-100"
+    @Builder.Default
     @Column(name = "created_at", updatable = false) private LocalDateTime createdAt = LocalDateTime.now();
 
     @Override
@@ -36,7 +38,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return this.email;
     }
 
     @Override

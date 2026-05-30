@@ -26,5 +26,6 @@ public class Alert {
     @Column(name = "source_url") private String sourceUrl;
     @Column(nullable = false) private String marketplace;
     @Column(nullable = false) private boolean seen = false;
+    @Builder.Default
     @Column(name = "created_at", updatable = false) private LocalDateTime createdAt = LocalDateTime.now();
 }
