@@ -1,7 +1,7 @@
 package com.catchprice.apiservice.repositories;
 
 
-import com.catchprice.apiservice.model.SavingsResponse;
+import com.catchprice.apiservice.dto.SavingsResponse;
 import com.catchprice.apiservice.model.UserSavings;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;

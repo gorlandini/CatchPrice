@@ -1,4 +1,4 @@
-package com.catchprice.apiservice.dto;
+package com.catchprice.workerservice.dto;
 
 import java.math.BigDecimal;
 import java.util.UUID;
