@@ -19,6 +19,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -47,6 +48,7 @@ class RepositoryTest {
     private AlertRepository alertRepository;
 
     private User savedUser;
+    private User firstUserCreated;
     private Product savedProduct;
 
     @BeforeEach
@@ -56,6 +58,25 @@ class RepositoryTest {
         savedProduct = productRepository.save(Product.builder()
                 .user(savedUser).name("Smart TV 55").mlQuery("smart tv 55")
                 .referencePrice(new BigDecimal("2000.00")).active(true).build());
+        savedProduct = productRepository.save(Product.builder()
+                .user(savedUser).name("SmartWatch").mlQuery("smartwatch")
+                .referencePrice(new BigDecimal("1200.00")).active(true).build());
+
+
+
+        firstUserCreated = savedUser;
+
+        savedUser = userRepository.save(User.builder()
+                .name("Vilma").email("vilma@email.com").password("hash").cep("11310-100").build());
+        savedProduct = productRepository.save(Product.builder()
+                .user(savedUser).name("Smart TV LG 40").mlQuery("smart tv lg 40")
+                .referencePrice(new BigDecimal("1800.00")).active(true).build());
+
+
+
+
+
+
     }
 
 
@@ -73,8 +94,18 @@ class RepositoryTest {
         productRepository.save(Product.builder().user(other).name("iPhone")
                 .mlQuery("iphone").referencePrice(new BigDecimal("5000.00")).active(true).build());
         var page = productRepository.findByUserEmail("joao@email.com", Pageable.ofSize(10));
-        assertThat(page.getContent()).asList().hasSize(1);
+        assertThat(page.getContent()).asList().hasSize(2);
     }
+
+
+    @Test
+    void shouldListTwoProductByFirstUserIdCreated() {
+        var product = productRepository.findByUserId(firstUserCreated.getId(), Pageable.ofSize(10));
+
+        assertThat(product.getContent().size()).isEqualTo(2);
+
+    }
+
 
 
 
