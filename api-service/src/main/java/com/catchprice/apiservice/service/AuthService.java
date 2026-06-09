@@ -4,6 +4,7 @@ import com.catchprice.apiservice.dto.AuthRequest;
 import com.catchprice.apiservice.dto.AuthResponse;
 import com.catchprice.apiservice.dto.RegisterRequest;
 import com.catchprice.apiservice.model.User;
+import com.catchprice.apiservice.repositories.ProductRepository;
 import com.catchprice.apiservice.repositories.UserRepository;
 import com.catchprice.apiservice.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final ProductRepository productRepository;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
@@ -29,7 +31,8 @@ public class AuthService {
                 .cep(request.cep())
                 .build();
         userRepository.save(user);
-        return new AuthResponse(jwtService.generateToken(user), user.getName(), user.getEmail());
+        // Usuário recém-registrado nunca tem produtos — firstLogin sempre true
+        return new AuthResponse(jwtService.generateToken(user), user.getName(), user.getEmail(), true);
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -38,6 +41,7 @@ public class AuthService {
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new IllegalStateException("Invalid credentials");
         }
-        return new AuthResponse(jwtService.generateToken(user), user.getName(), user.getEmail());
+        boolean firstLogin = productRepository.countByUserEmail(user.getEmail()) == 0;
+        return new AuthResponse(jwtService.generateToken(user), user.getName(), user.getEmail(), firstLogin);
     }
 }

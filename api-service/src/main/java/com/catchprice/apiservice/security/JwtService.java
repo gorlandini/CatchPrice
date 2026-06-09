@@ -37,7 +37,12 @@ public class JwtService {
     }
 
     public boolean isValid(String token, UserDetails user) {
-        return extractEmail(token).equals(user.getUsername()) && !isExpired(token);
+        try {
+            return extractEmail(token).equals(user.getUsername()) && !isExpired(token);
+        } catch (Exception e) {
+            System.out.println("JWT inválido: " + e.getMessage());
+            return false;
+        }
     }
 
     private boolean isExpired(String token) {
